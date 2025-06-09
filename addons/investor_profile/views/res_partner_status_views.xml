@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_inherit_status" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.status</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page[@name='sales_purchases']" position="after">
+                <page string="Thông tin trạng thái" name="investor_status">
+                    <field name="status_info_ids" context="{'default_partner_id': id}">
+                        <list>
+                            <field name="so_tk"/>
+                            <field name="ma_gioi_thieu"/>
+                            <field name="trang_thai_tk_dau_tu"/>
+                            <field name="ho_so_goc"/>
+                            <field name="rm_id"/>
+                            <field name="bda_id"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
