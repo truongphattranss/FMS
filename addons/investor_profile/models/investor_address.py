@@ -23,6 +23,13 @@ class InvestorAddress(models.Model):
 
     @api.model
     def create(self, vals):
+        if not vals.get('investor_id') and vals.get('partner_id'):
+            investor_profile = self.env['investor.profile'].search([('partner_id', '=', vals['partner_id'])], limit=1)
+            if investor_profile:
+                vals['investor_id'] = investor_profile.id
+            else:
+                raise ValidationError(_('Không tìm thấy hồ sơ nhà đầu tư cho đối tác này.'))
+
         if vals.get('is_default'):
             self.search([
                 ('partner_id', '=', self.env['investor.profile'].browse(vals.get('investor_id')).partner_id.id),
@@ -64,8 +71,8 @@ class InvestorAddress(models.Model):
     def _check_zip(self):
         for record in self:
             if record.zip:
-                if not record.zip.isdigit() or len(record.zip) != 6:
-                    raise ValidationError(_('Mã bưu điện phải gồm 6 chữ số.'))
+                if not record.zip.isdigit() or len(record.zip) != 5:
+                    raise ValidationError(_('Mã bưu điện phải gồm 5 chữ số.'))
 
     @api.constrains('address_type')
     def _check_address_type(self):

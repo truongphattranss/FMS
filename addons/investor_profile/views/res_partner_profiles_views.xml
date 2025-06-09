@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
                 <page string="Investor's personal Information" name="investor_profile">
-                    <field name="investor_profile_ids" widget="one2many" context="{'default_partner_id': id}">
+                    <field name="investor_profile_ids" widget="one2many">
                         <list>
                             <field name="name"/>
                             <field name="birth_date" widget="date"/>

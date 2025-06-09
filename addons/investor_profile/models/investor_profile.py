@@ -87,6 +87,17 @@ class InvestorProfile(models.Model):
                 if record.birth_date and record.id_issue_date < record.birth_date:
                     raise ValidationError(_('Ngày cấp không thể nhỏ hơn ngày sinh.'))
 
+    @api.constrains('partner_id')
+    def _check_unique_partner(self):
+        for record in self:
+            if record.partner_id:
+                duplicate = self.search([
+                    ('partner_id', '=', record.partner_id.id),
+                    ('id', '!=', record.id)
+                ])
+                if duplicate:
+                    raise ValidationError(_('Mỗi đối tác chỉ được có một hồ sơ nhà đầu tư.'))
+
     def write(self, vals):
         res = super().write(vals)
         if self.partner_id:

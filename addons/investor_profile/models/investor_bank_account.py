@@ -23,6 +23,13 @@ class InvestorBankAccount(models.Model):
 
     @api.model
     def create(self, vals):
+        if not vals.get('investor_id') and vals.get('partner_id'):
+            investor_profile = self.env['investor.profile'].search([('partner_id', '=', vals['partner_id'])], limit=1)
+            if investor_profile:
+                vals['investor_id'] = investor_profile.id
+            else:
+                raise ValidationError(_('Không tìm thấy hồ sơ nhà đầu tư cho đối tác này.'))
+
         if vals.get('is_default'):
             self.search([
                 ('partner_id', '=', self.env['investor.profile'].browse(vals.get('investor_id')).partner_id.id),

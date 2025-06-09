@@ -10,6 +10,7 @@
                 <page string="Bank Accounts" name="bank_accounts">
                     <field name="bank_account_ids" widget="one2many" context="{'default_partner_id': id}">
                         <list>
+                            <field name="investor_id"/>
                             <field name="bank_name"/>
                             <field name="account_number"/>
                             <field name="account_holder"/>
@@ -28,6 +29,7 @@
         <field name="model">investor.bank.account</field>
         <field name="arch" type="xml">
             <list string="Bank Accounts">
+                <field name="investor_id"/>
                 <field name="bank_name"/>
                 <field name="account_number"/>
                 <field name="account_holder"/>
@@ -44,6 +46,11 @@
         <field name="arch" type="xml">
             <form string="Bank Account">
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="investor_id" placeholder="Select Investor" required="1" class="oe_required"/>
+                        </h1>
+                    </div>
                     <group>
                         <group string="Bank Information">
                             <field name="bank_name" required="1" class="oe_required"/>
@@ -71,11 +78,13 @@
         <field name="model">investor.bank.account</field>
         <field name="arch" type="xml">
             <search string="Search Bank Accounts">
+                <field name="investor_id"/>
                 <field name="bank_name"/>
                 <field name="account_number"/>
                 <field name="account_holder"/>
                 <field name="branch"/>
                 <group expand="0" string="Group By">
+                    <filter string="Investor" name="group_by_investor" context="{'group_by': 'investor_id'}"/>
                     <filter string="Bank" name="group_by_bank" context="{'group_by':'bank_name'}"/>
                     <filter string="Default Account" name="default" domain="[('is_default','=',True)]"/>
                 </group>

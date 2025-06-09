@@ -46,12 +46,13 @@ class StatusInfo(models.Model):
     @api.constrains('partner_id')
     def _check_unique_partner(self):
         for record in self:
-            duplicate = self.search([
-                ('partner_id', '=', record.partner_id.id),
-                ('id', '!=', record.id)
-            ])
-            if duplicate:
-                raise ValidationError(_('Mỗi người dùng chỉ được có một bản ghi trạng thái.'))
+            if record.partner_id:
+                duplicate = self.search([
+                    ('partner_id', '=', record.partner_id.id),
+                    ('id', '!=', record.id)
+                ])
+                if duplicate:
+                    raise ValidationError(_('Mỗi đối tác chỉ được có một thông tin trạng thái.'))
 
     @api.constrains('rm_id', 'bda_id')
     def _check_rm_bda(self):

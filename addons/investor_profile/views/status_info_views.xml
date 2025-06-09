@@ -9,11 +9,11 @@
             <xpath expr="//notebook" position="inside">
                 <page string="Status Information" name="status_info">
                     <field name="status_info_ids" widget="one2many" context="{'default_partner_id': id}">
-                        <list>
+                        <list decoration-success="trang_thai_tk_dau_tu == 'da_duyet'" decoration-warning="trang_thai_tk_dau_tu == 'cho_duyet'" decoration-danger="trang_thai_tk_dau_tu == 'tu_choi'">
                             <field name="so_tk"/>
                             <field name="ma_gioi_thieu"/>
-                            <field name="trang_thai_tk_dau_tu" widget="state_selection"/>
-                            <field name="ho_so_goc"/>
+                            <field name="trang_thai_tk_dau_tu" widget="badge" decoration-success="trang_thai_tk_dau_tu == 'da_duyet'" decoration-warning="trang_thai_tk_dau_tu == 'cho_duyet'" decoration-danger="trang_thai_tk_dau_tu == 'tu_choi'" options="{'classes': {'success': 'text-success', 'warning': 'text-warning', 'danger': 'text-danger'}}"/>
+                            <field name="ho_so_goc" widget="badge" decoration-success="ho_so_goc == 'da_nhan'" decoration-warning="ho_so_goc == 'chua_nhan'" options="{'classes': {'success': 'text-success', 'warning': 'text-warning'}}"/>
                             <field name="rm_id"/>
                             <field name="bda_id"/>
                         </list>
@@ -28,11 +28,11 @@
         <field name="name">status.info.list</field>
         <field name="model">status.info</field>
         <field name="arch" type="xml">
-            <list string="Status Information">
+            <list string="Status Information" decoration-success="trang_thai_tk_dau_tu == 'da_duyet'" decoration-warning="trang_thai_tk_dau_tu == 'cho_duyet'" decoration-danger="trang_thai_tk_dau_tu == 'tu_choi'">
                 <field name="so_tk"/>
                 <field name="ma_gioi_thieu"/>
-                <field name="trang_thai_tk_dau_tu" widget="state_selection"/>
-                <field name="ho_so_goc"/>
+                <field name="trang_thai_tk_dau_tu" widget="badge" decoration-success="trang_thai_tk_dau_tu == 'da_duyet'" decoration-warning="trang_thai_tk_dau_tu == 'cho_duyet'" decoration-danger="trang_thai_tk_dau_tu == 'tu_choi'" options="{'classes': {'success': 'text-success', 'warning': 'text-warning', 'danger': 'text-danger'}}"/>
+                <field name="ho_so_goc" widget="badge" decoration-success="ho_so_goc == 'da_nhan'" decoration-warning="ho_so_goc == 'chua_nhan'" options="{'classes': {'success': 'text-success', 'warning': 'text-warning'}}"/>
                 <field name="rm_id"/>
                 <field name="bda_id"/>
             </list>
@@ -84,6 +84,13 @@
                 <field name="ho_so_goc"/>
                 <field name="rm_id"/>
                 <field name="bda_id"/>
+                <separator/>
+                <filter string="Approved" name="approved" domain="[('trang_thai_tk_dau_tu','=','da_duyet')]"/>
+                <filter string="Pending" name="pending" domain="[('trang_thai_tk_dau_tu','=','cho_duyet')]"/>
+                <filter string="Rejected" name="rejected" domain="[('trang_thai_tk_dau_tu','=','tu_choi')]"/>
+                <separator/>
+                <filter string="Original Documents Received" name="doc_received" domain="[('ho_so_goc','=','da_nhan')]"/>
+                <filter string="Original Documents Pending" name="doc_pending" domain="[('ho_so_goc','=','chua_nhan')]"/>
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_by_status" context="{'group_by':'trang_thai_tk_dau_tu'}"/>
                     <filter string="Document Status" name="group_by_doc" context="{'group_by':'ho_so_goc'}"/>
