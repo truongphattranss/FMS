@@ -15,6 +15,7 @@
     'depends': ['base'],
     'data': [
         'security/ir.model.access.csv',
+        'views/status_info_views.xml',
         'views/personal_info_view.xml',
         'views/res_partner_profiles_views.xml',
         'views/res_partner_bank_views.xml',
@@ -22,7 +23,6 @@
         'views/menu_views.xml',
         'views/res_partner_hide_view.xml',
         'views/res_partner_status_views.xml',
-        'views/status_info_views.xml',
     ],
     'demo': [],
     'installable': True,

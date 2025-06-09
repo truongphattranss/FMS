@@ -8,17 +8,56 @@
             <xpath expr="//form/sheet/notebook/page[@name='sales_purchases']" position="after">
                 <page string="Thông tin trạng thái" name="investor_status">
                     <field name="status_info_ids" context="{'default_partner_id': id}">
-                        <list>
+                        <list decoration-success="trang_thai_tk_dau_tu == 'da_duyet'" decoration-warning="trang_thai_tk_dau_tu == 'cho_duyet'" decoration-danger="trang_thai_tk_dau_tu == 'tu_choi'">
                             <field name="so_tk"/>
                             <field name="ma_gioi_thieu"/>
-                            <field name="trang_thai_tk_dau_tu"/>
-                            <field name="ho_so_goc"/>
+                            <field name="trang_thai_tk_dau_tu" widget="badge" decoration-success="trang_thai_tk_dau_tu == 'da_duyet'" decoration-warning="trang_thai_tk_dau_tu == 'cho_duyet'" decoration-danger="trang_thai_tk_dau_tu == 'tu_choi'" options="{'classes': {'success': 'text-success', 'warning': 'text-warning', 'danger': 'text-danger'}}"/>
+                            <field name="ho_so_goc" widget="badge" decoration-success="ho_so_goc == 'da_nhan'" decoration-warning="ho_so_goc == 'chua_nhan'" options="{'classes': {'success': 'text-success', 'warning': 'text-warning'}}"/>
                             <field name="rm_id"/>
                             <field name="bda_id"/>
                         </list>
                     </field>
                 </page>
             </xpath>
+        </field>
+    </record>
+
+    <!-- Status Info Search View -->
+    <record id="view_status_info_search" model="ir.ui.view">
+        <field name="name">status.info.search</field>
+        <field name="model">status.info</field>
+        <field name="arch" type="xml">
+            <search string="Search Status Information">
+                <field name="so_tk"/>
+                <field name="ma_gioi_thieu"/>
+                <field name="rm_id"/>
+                <field name="bda_id"/>
+                <separator/>
+                <filter string="Approved" name="approved" domain="[('trang_thai_tk_dau_tu','=','da_duyet')]"/>
+                <filter string="Pending" name="pending" domain="[('trang_thai_tk_dau_tu','=','cho_duyet')]"/>
+                <filter string="Rejected" name="rejected" domain="[('trang_thai_tk_dau_tu','=','tu_choi')]"/>
+                <separator/>
+                <filter string="Original Documents Received" name="doc_received" domain="[('ho_so_goc','=','da_nhan')]"/>
+                <filter string="Original Documents Pending" name="doc_pending" domain="[('ho_so_goc','=','chua_nhan')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_by_status" context="{'group_by':'trang_thai_tk_dau_tu'}"/>
+                    <filter string="Document Status" name="group_by_doc" context="{'group_by':'ho_so_goc'}"/>
+                    <filter string="RM" name="group_by_rm" context="{'group_by':'rm_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Status Info Action -->
+    <record id="action_status_info" model="ir.actions.act_window">
+        <field name="name">Status Information</field>
+        <field name="res_model">status.info</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_status_info_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new status information
+            </p>
         </field>
     </record>
 </odoo>

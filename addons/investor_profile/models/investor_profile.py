@@ -32,10 +32,13 @@ class InvestorProfile(models.Model):
     email = fields.Char(string='Email:')
 
     # Bank account information
-    bank_account_ids = fields.One2many('investor.bank.account', 'investor_id', string='Bank Accounts')
+    bank_account_ids = fields.One2many('investor.bank.account', 'investor_id', string='Tài khoản ngân hàng')
 
     # Address information
-    address_ids = fields.One2many('investor.address', 'investor_id', string='Addresses')
+    address_ids = fields.One2many('investor.address', 'investor_id', string='Địa chỉ')
+
+    # Status information
+    status_info_ids = fields.One2many('status.info', 'partner_id', string='Thông tin trạng thái')
 
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
@@ -97,73 +100,4 @@ class InvestorProfile(models.Model):
             if record.partner_id:
                 self.env['status.info']._check_and_update_ho_so_goc(record.partner_id.id)
         return records
-
-class InvestorBankAccount(models.Model):
-    _name = 'investor.bank.account'
-    _description = 'Investor Bank Account'
-
-    investor_id = fields.Many2one('investor.profile', string='Investor', required=True, ondelete='cascade')
-    partner_id = fields.Many2one('res.partner', related='investor_id.partner_id', string='Partner', store=True)
-    bank_name = fields.Char(string='Bank Name', required=True)
-    account_number = fields.Char(string='Account Number', required=True)
-    account_holder = fields.Char(string='Account Holder Name', required=True)
-    branch = fields.Char(string='Branch')
-    is_default = fields.Boolean(string='Default Account')
-
-    @api.model
-    def create(self, vals):
-        if vals.get('is_default'):
-            self.search([
-                ('partner_id', '=', self.env['investor.profile'].browse(vals.get('investor_id')).partner_id.id),
-                ('is_default', '=', True)
-            ]).write({'is_default': False})
-        return super().create(vals)
-
-    def write(self, vals):
-        if vals.get('is_default'):
-            self.search([
-                ('partner_id', '=', self.partner_id.id),
-                ('is_default', '=', True),
-                ('id', '!=', self.id)
-            ]).write({'is_default': False})
-        return super().write(vals)
-
-class InvestorAddress(models.Model):
-    _name = 'investor.address'
-    _description = 'Investor Address'
-
-    investor_id = fields.Many2one('investor.profile', string='Investor', required=True, ondelete='cascade')
-    partner_id = fields.Many2one('res.partner', related='investor_id.partner_id', string='Partner', store=True)
-    address_type = fields.Selection([
-        ('permanent', 'Permanent Address'),
-        ('current', 'Current Address'),
-        ('other', 'Other')
-    ], string='Address Type', required=True)
-    street = fields.Char(string='Street')
-    street2 = fields.Char(string='Street 2')
-    city = fields.Char(string='City')
-    district = fields.Char(string='Quận/Huyện')
-    ward = fields.Char(string='Phường/Xã')
-    state_id = fields.Many2one('res.country.state', string='State')
-    zip = fields.Char(string='ZIP')
-    country_id = fields.Many2one('res.country', string='Country')
-    is_default = fields.Boolean(string='Default Address')
-
-    @api.model
-    def create(self, vals):
-        if vals.get('is_default'):
-            self.search([
-                ('partner_id', '=', self.env['investor.profile'].browse(vals.get('investor_id')).partner_id.id),
-                ('is_default', '=', True)
-            ]).write({'is_default': False})
-        return super().create(vals)
-
-    def write(self, vals):
-        if vals.get('is_default'):
-            self.search([
-                ('partner_id', '=', self.partner_id.id),
-                ('is_default', '=', True),
-                ('id', '!=', self.id)
-            ]).write({'is_default': False})
-        return super().write(vals)
 

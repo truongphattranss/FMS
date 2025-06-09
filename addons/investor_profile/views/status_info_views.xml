@@ -1,34 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- List View -->
+    <!-- Inherit Partner Form View -->
+    <record id="view_partner_form_inherit_status" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.status</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Status Information" name="status_info">
+                    <field name="status_info_ids" widget="one2many" context="{'default_partner_id': id}">
+                        <list>
+                            <field name="so_tk"/>
+                            <field name="ma_gioi_thieu"/>
+                            <field name="trang_thai_tk_dau_tu" widget="state_selection"/>
+                            <field name="ho_so_goc"/>
+                            <field name="rm_id"/>
+                            <field name="bda_id"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Status Info List View -->
     <record id="view_status_info_list" model="ir.ui.view">
         <field name="name">status.info.list</field>
         <field name="model">status.info</field>
         <field name="arch" type="xml">
-            <list>
+            <list string="Status Information">
                 <field name="so_tk"/>
                 <field name="ma_gioi_thieu"/>
-                <field name="trang_thai_tk_dau_tu" widget="badge" decoration-success="trang_thai_tk_dau_tu == 'da_duyet'" decoration-warning="trang_thai_tk_dau_tu == 'cho_duyet'" decoration-danger="trang_thai_tk_dau_tu == 'tu_choi'" options="{'classes': {'success': 'text-success', 'warning': 'text-warning', 'danger': 'text-danger'}}"/>
-                <field name="ho_so_goc" widget="badge" decoration-success="ho_so_goc == 'da_nhan'" decoration-warning="ho_so_goc == 'chua_nhan'" options="{'classes': {'success': 'text-success', 'warning': 'text-warning'}}"/>
+                <field name="trang_thai_tk_dau_tu" widget="state_selection"/>
+                <field name="ho_so_goc"/>
                 <field name="rm_id"/>
                 <field name="bda_id"/>
             </list>
         </field>
     </record>
 
-    <!-- Form View -->
+    <!-- Status Info Form View -->
     <record id="view_status_info_form" model="ir.ui.view">
         <field name="name">status.info.form</field>
         <field name="model">status.info</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Status Information">
+                <header>
+                    <field name="trang_thai_tk_dau_tu" widget="state_selection" statusbar_visible="cho_duyet,da_duyet,tu_choi"/>
+                </header>
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="partner_id" placeholder="Select Partner" required="1" class="oe_required"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="partner_id" force_save="1"/>
-                        <field name="so_tk"/>
-                        <field name="ma_gioi_thieu"/>
-                        <field name="trang_thai_tk_dau_tu"/>
-                        <field name="ho_so_goc"/>
+                        <group string="Account Information">
+                            <field name="so_tk"/>
+                            <field name="ma_gioi_thieu"/>
+                        </group>
+                        <group string="Document Status">
+                            <field name="ho_so_goc" widget="radio"/>
+                        </group>
+                    </group>
+                    <group string="Staff Information">
                         <field name="rm_id"/>
                         <field name="bda_id"/>
                     </group>
@@ -37,11 +72,39 @@
         </field>
     </record>
 
-    <!-- Action -->
+    <!-- Status Info Search View -->
+    <record id="view_status_info_search" model="ir.ui.view">
+        <field name="name">status.info.search</field>
+        <field name="model">status.info</field>
+        <field name="arch" type="xml">
+            <search string="Search Status Information">
+                <field name="so_tk"/>
+                <field name="ma_gioi_thieu"/>
+                <field name="trang_thai_tk_dau_tu"/>
+                <field name="ho_so_goc"/>
+                <field name="rm_id"/>
+                <field name="bda_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_by_status" context="{'group_by':'trang_thai_tk_dau_tu'}"/>
+                    <filter string="Document Status" name="group_by_doc" context="{'group_by':'ho_so_goc'}"/>
+                    <filter string="RM" name="group_by_rm" context="{'group_by':'rm_id'}"/>
+                    <filter string="BDA" name="group_by_bda" context="{'group_by':'bda_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Status Info Action -->
     <record id="action_status_info" model="ir.actions.act_window">
         <field name="name">Status Information</field>
         <field name="res_model">status.info</field>
         <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_status_info_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new status information
+            </p>
+        </field>
     </record>
 
     <!-- Menu -->
